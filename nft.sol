@@ -87,10 +87,24 @@ contract NFT is ERC721Enumerable, Ownable {
   function chargeHearts(uint _tokenId) public {
     require(ownerOf(_tokenId)==msg.sender,"your are not owner of this nft");
     require(getNftById(_tokenId).hearts==0,"You still have hearts");
-    if(getNftById(_tokenId).Shield==true)getNftById(_tokenId).hearts=maxheartsForShieldNft;
-    else getNftById(_tokenId).hearts=maxheartsForSimpleNft;
+    uint NumberOfHearts=0;
+    if(getNftById(_tokenId).Shield) NumberOfHearts=maxheartsForShieldNft;
+    else NumberOfHearts=maxheartsForSimpleNft;
+    Nft memory newNft=Nft(getNftById(_tokenId).id,getNftById(_tokenId).level,11,getNftById(_tokenId).points,getNftById(_tokenId).Shield);
+    updateNft(_tokenId,newNft);
     emit ChargeHearts(_tokenId);
   }
+
+  function updateNft(uint _tokenId,Nft memory _newNft) public {
+     for(uint indexfNft=0;indexfNft<nfts.length;indexfNft++){
+       if(nfts[indexfNft].id==_tokenId){
+         nfts[indexfNft]=_newNft;
+       }
+     }
+  }
+
+  
+
   function maxByLevel(uint _level) public view returns(uint256){
     if(_level==Bronze) return MaxBronze;
     if(_level==Silver) return MaxSilver;
@@ -98,7 +112,7 @@ contract NFT is ERC721Enumerable, Ownable {
     if(_level==Diamond) return MaxDiamond;
   }
   function upLevel() public {
-
+    
   }
   function getNftById(uint256 _tokenId) public view returns(Nft memory){
     for(uint indexOfArrayNfts=0;indexOfArrayNfts<nfts.length;indexOfArrayNfts++)
