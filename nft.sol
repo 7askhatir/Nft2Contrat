@@ -40,6 +40,7 @@ contract NFT is ERC721Enumerable, Ownable {
     uint256 points;
     bool Shield;
   }
+  event ChargeHearts(uint tokenId);
 
   Nft[] public nfts;
   mapping (uint => Nft) public nftPropriety;
@@ -70,9 +71,9 @@ contract NFT is ERC721Enumerable, Ownable {
       require(maxByLevel(_level)>numberNftByLevel(_level),"number nft for this level >MaxLevel");
       require(nuberBoxByOwner[msg.sender]>0,"You don't have boxes");
         _safeMint(msg.sender,tokenId);
-        tokenId++;              
-        Nft memory nft = Nft(tokenId,_level,5,0,true);
+        Nft memory nft = Nft(tokenId,_level,0,0,true);
         nfts.push(nft);
+        tokenId++;              
         nuberBoxByOwner[msg.sender]--; 
   }
   
@@ -82,6 +83,13 @@ contract NFT is ERC721Enumerable, Ownable {
       if(nfts[indexOfArrayNfts].level==_level)
        numberByLevel++;
        return numberByLevel;
+  }
+  function chargeHearts(uint _tokenId) public {
+    require(ownerOf(_tokenId)==msg.sender,"your are not owner of this nft");
+    require(getNftById(_tokenId).hearts==0,"You still have hearts");
+    if(getNftById(_tokenId).Shield==true)getNftById(_tokenId).hearts=maxheartsForShieldNft;
+    else getNftById(_tokenId).hearts=maxheartsForSimpleNft;
+    emit ChargeHearts(_tokenId);
   }
   function maxByLevel(uint _level) public view returns(uint256){
     if(_level==Bronze) return MaxBronze;
