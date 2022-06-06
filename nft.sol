@@ -71,7 +71,7 @@ contract NFT is ERC721Enumerable, Ownable {
       require(maxByLevel(_level)>numberNftByLevel(_level),"number nft for this level >MaxLevel");
       require(nuberBoxByOwner[msg.sender]>0,"You don't have boxes");
         _safeMint(msg.sender,tokenId);
-        Nft memory nft = Nft(tokenId,_level,0,0,true);
+        Nft memory nft = Nft(tokenId,_level,0,5,true);
         nfts.push(nft);
         tokenId++;              
         nuberBoxByOwner[msg.sender]--; 
@@ -90,7 +90,7 @@ contract NFT is ERC721Enumerable, Ownable {
     uint NumberOfHearts=0;
     if(getNftById(_tokenId).Shield) NumberOfHearts=maxheartsForShieldNft;
     else NumberOfHearts=maxheartsForSimpleNft;
-    Nft memory newNft=Nft(getNftById(_tokenId).id,getNftById(_tokenId).level,11,getNftById(_tokenId).points,getNftById(_tokenId).Shield);
+    Nft memory newNft=Nft(getNftById(_tokenId).id,getNftById(_tokenId).level,NumberOfHearts,getNftById(_tokenId).points,getNftById(_tokenId).Shield);
     updateNft(_tokenId,newNft);
     emit ChargeHearts(_tokenId);
   }
@@ -114,12 +114,37 @@ contract NFT is ERC721Enumerable, Ownable {
   function upLevel() public {
     
   }
-  function getNftById(uint256 _tokenId) public view returns(Nft memory){
+  function getNftById(uint256 _tokenId) public view returns(Nft memory nft){
     for(uint indexOfArrayNfts=0;indexOfArrayNfts<nfts.length;indexOfArrayNfts++)
     if(nfts[indexOfArrayNfts].id==_tokenId)
-    return nfts[indexOfArrayNfts];
+    nft= nfts[indexOfArrayNfts];
   }
-
+  function upgradeNft(uint256 _tokenId) public {
+    uint256 level=getNftById(_tokenId).level;
+    uint256 points=getNftById(_tokenId).points;
+    uint256 shield=getNftById(_tokenId).shield;
+    require(level<=Diamond,"this is super level");
+    require(ownerOf(_tokenId)==msg.sender,"your are not owner of this nft");
+    if(level==1 &&  shield==true){
+      require(points==1,"your points not ------- for this transaction");
+    }
+    if(level==1  && shield==false){
+      require(points==1,"your points not ------- for this transaction");
+    }
+    if(level==2  && shield==false){
+      require(points==1,"your points not ------- for this transaction");
+    }
+    if(level==2  && shield==false){
+      require(points==1,"your points not ------- for this transaction");
+    }
+    if(level==3  && shield==false){
+      require(points==1,"your points not ------- for this transaction");
+    }
+    if(level==4  && shield==false){
+      require(points==1,"your points not ------- for this transaction");
+    }
+    
+  }
 
   
 
