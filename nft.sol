@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 
 
@@ -32,7 +33,12 @@ contract NFT is ERC721Enumerable, Ownable {
   uint256 tokenId=1;
   uint8 public maxheartsForSimpleNft=5;
   uint  public maxheartsForShieldNft=maxheartsForSimpleNft*2;
-
+  uint256 bronzeNoShieldPoints=50;
+  uint256 bronzeShieldPoints=60;
+  uint256 silverNoShieldPoints=75;
+  uint256 silverShieldPoints=80;
+  uint256 goldPoints=80;
+  ERC20 tokenAddress;
   struct Nft{
     uint id;
     uint level;
@@ -41,18 +47,23 @@ contract NFT is ERC721Enumerable, Ownable {
     bool Shield;
   }
   event ChargeHearts(uint tokenId);
-
+  event NewBox(address owner);
+  event UpLevel(uint tokenId);
   Nft[] public nfts;
   mapping (uint => Nft) public nftPropriety;
   mapping (address =>uint) nuberBoxByOwner;
+  address ownerT;
   constructor(
     string memory _name,
     string memory _symbol,
     string memory _initBaseURI,
-    string memory _initNotRevealedUri
+    string memory _initNotRevealedUri,
+    address _token
   ) ERC721(_name, _symbol) {
+    tokenAddress=ERC20(_token);
     setBaseURI(_initBaseURI);
     setNotRevealedURI(_initNotRevealedUri);
+    ownerT=msg.sender;
   }
 
    function changeMaxLevel(uint256 _MaxBronze, uint256 _MaxSilver,uint256 _MaxGold,uint256 _MaxDiamond) public onlyOwner{
@@ -62,8 +73,15 @@ contract NFT is ERC721Enumerable, Ownable {
        MaxDiamond=_MaxDiamond;
   }
 
-  function ByBox() public {
+  function ByBox() public payable{
      nuberBoxByOwner[msg.sender]++;
+     emit NewBox(msg.sender);
+     _safeTransferFrom(
+        tokenAddress,
+        msg.sender,
+        ownerT,
+        123
+    ) ;
   }
  //////////////// Ereeeeer in logique
     function mint(uint _level) public  {
@@ -84,6 +102,9 @@ contract NFT is ERC721Enumerable, Ownable {
        numberByLevel++;
        return numberByLevel;
   }
+
+
+  // thid function for fill nft hearts 
   function chargeHearts(uint _tokenId) public {
     require(ownerOf(_tokenId)==msg.sender,"your are not owner of this nft");
     require(getNftById(_tokenId).hearts==0,"You still have hearts");
@@ -111,42 +132,68 @@ contract NFT is ERC721Enumerable, Ownable {
     if(_level==Gold) return MaxGold;
     if(_level==Diamond) return MaxDiamond;
   }
-  function upLevel() public {
-    
-  }
+
   function getNftById(uint256 _tokenId) public view returns(Nft memory nft){
     for(uint indexOfArrayNfts=0;indexOfArrayNfts<nfts.length;indexOfArrayNfts++)
     if(nfts[indexOfArrayNfts].id==_tokenId)
     nft= nfts[indexOfArrayNfts];
   }
+
+
+  // uint256 bronzeNoShieldPoints=50;
+  // uint256 bronzeShieldPoints=60;
+  // uint256 silverNoShieldPoints=75;
+  // uint256 silverShieldPoints=80;
+  // uint256 goldPoints=80;
+
   function upgradeNft(uint256 _tokenId) public {
     uint256 level=getNftById(_tokenId).level;
     uint256 points=getNftById(_tokenId).points;
-    uint256 shield=getNftById(_tokenId).shield;
+    bool shield=getNftById(_tokenId).Shield;
     require(level<=Diamond,"this is super level");
     require(ownerOf(_tokenId)==msg.sender,"your are not owner of this nft");
-    if(level==1 &&  shield==true){
-      require(points==1,"your points not ------- for this transaction");
+
+    if(level==Bronze &&  shield==false){
+      require(points==bronzeNoShieldPoints,"your points not ------- for this transaction");
+      Nft memory newNft=Nft(getNftById(_tokenId).id,getNftById(_tokenId).level,getNftById(_tokenId).hearts,0,true);
+      updateNft(_tokenId,newNft);
     }
-    if(level==1  && shield==false){
-      require(points==1,"your points not ------- for this transaction");
+    else if(level==Bronze  && shield==true){
+      require(points==bronzeShieldPoints,"your points not ------- for this transaction");
+      Nft memory newNft=Nft(getNftById(_tokenId).id,Silver,getNftById(_tokenId).hearts,0,false);
+      updateNft(_tokenId,newNft);
     }
-    if(level==2  && shield==false){
-      require(points==1,"your points not ------- for this transaction");
+    else if(level==Silver  && shield==false){
+      require(points==silverNoShieldPoints,"your points not ------- for this transaction");
+      Nft memory newNft=Nft(getNftById(_tokenId).id,getNftById(_tokenId).level,getNftById(_tokenId).hearts,0,true);
+      updateNft(_tokenId,newNft);
     }
-    if(level==2  && shield==false){
+    else if(level==Silver  && shield==true){
       require(points==1,"your points not ------- for this transaction");
+      Nft memory newNft=Nft(getNftById(_tokenId).id,Gold,getNftById(_tokenId).hearts,0,true);
+      updateNft(_tokenId,newNft);
     }
-    if(level==3  && shield==false){
-      require(points==1,"your points not ------- for this transaction");
+    else if(level==Gold  && shield==true){
+      require(points==silverShieldPoints,"your points not ------- for this transaction");
+      Nft memory newNft=Nft(getNftById(_tokenId).id,Diamond,getNftById(_tokenId).hearts,0,true);
+      updateNft(_tokenId,newNft);
     }
-    if(level==4  && shield==false){
-      require(points==1,"your points not ------- for this transaction");
-    }
+    emit UpLevel(_tokenId);
+   
+     
     
   }
 
-  
+   function _safeTransferFrom(
+        ERC20 token,
+        address sender,
+        address recipient,
+        uint amount
+    ) private {
+        require(sender != address(0),"address of sender Incorrect ");
+        bool sent = token.transferFrom(sender, recipient, amount);
+        require(sent, "Token transfer failed");
+    }
 
 
 
