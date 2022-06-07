@@ -26,10 +26,18 @@ contract NFT is ERC721Enumerable, Ownable {
   uint8 public constant Silver=2;
   uint8 public constant Gold=3;
   uint8 public constant Diamond=4;
-  uint256 public MaxBronze=100;
-  uint256 public MaxSilver=200;
-  uint256 public MaxGold=300;
-  uint256 public MaxDiamond=400;
+  // uint256 public MaxBronze=100;
+  // uint256 public MaxSilver=200;
+  // uint256 public MaxGold=300;
+  // uint256 public MaxDiamond=400;
+  uint8 public constant Simple=0;
+  uint8 public constant T1P=1;
+  uint8 public constant T2P=2;
+  uint8 public constant T3P=3;
+  uint8 public constant T4P=4;
+  uint8 public constant T5P=5;
+  uint8 public constant T6P=6;
+  uint8 public constant T7P=7;
   uint256 tokenId=1;
   uint8 public maxheartsForSimpleNft=5;
   uint  public maxheartsForShieldNft=maxheartsForSimpleNft*2;
@@ -41,6 +49,7 @@ contract NFT is ERC721Enumerable, Ownable {
   ERC20 tokenAddress;
   struct Nft{
     uint id;
+    uint Type;
     uint level;
     uint256 hearts;
     uint256 points;
@@ -66,12 +75,12 @@ contract NFT is ERC721Enumerable, Ownable {
     ownerT=msg.sender;
   }
 
-   function changeMaxLevel(uint256 _MaxBronze, uint256 _MaxSilver,uint256 _MaxGold,uint256 _MaxDiamond) public onlyOwner{
-       MaxBronze=_MaxBronze;
-       MaxSilver=_MaxSilver;
-       MaxGold=_MaxGold;
-       MaxDiamond=_MaxDiamond;
-  }
+  //  function changeMaxLevel(uint256 _MaxBronze, uint256 _MaxSilver,uint256 _MaxGold,uint256 _MaxDiamond) public onlyOwner{
+  //      MaxBronze=_MaxBronze;
+  //      MaxSilver=_MaxSilver;
+  //      MaxGold=_MaxGold;
+  //      MaxDiamond=_MaxDiamond;
+  // }
 
   function ByBox() public payable{
      nuberBoxByOwner[msg.sender]++;
@@ -81,15 +90,14 @@ contract NFT is ERC721Enumerable, Ownable {
         msg.sender,
         ownerT,
         123
-    ) ;
+    ) ; 
   }
  //////////////// Ereeeeer in logique
-    function mint(uint _level) public  {
-      require(_level>=1 && _level<5,"this level not existed");
-      require(maxByLevel(_level)>numberNftByLevel(_level),"number nft for this level >MaxLevel");
-      require(nuberBoxByOwner[msg.sender]>0,"You don't have boxes");
+    function mint() public  {
+      
+      require(nuberBoxByOwner[msg.sender]>0,"You don't have boxes");  
         _safeMint(msg.sender,tokenId);
-        Nft memory nft = Nft(tokenId,_level,0,5,true);
+        Nft memory nft = Nft(tokenId,2,1,0,5,true);
         nfts.push(nft);
         tokenId++;              
         nuberBoxByOwner[msg.sender]--; 
@@ -111,7 +119,7 @@ contract NFT is ERC721Enumerable, Ownable {
     uint NumberOfHearts=0;
     if(getNftById(_tokenId).Shield) NumberOfHearts=maxheartsForShieldNft;
     else NumberOfHearts=maxheartsForSimpleNft;
-    Nft memory newNft=Nft(getNftById(_tokenId).id,getNftById(_tokenId).level,NumberOfHearts,getNftById(_tokenId).points,getNftById(_tokenId).Shield);
+    Nft memory newNft=Nft(getNftById(_tokenId).id,2,getNftById(_tokenId).level,NumberOfHearts,getNftById(_tokenId).points,getNftById(_tokenId).Shield);
     updateNft(_tokenId,newNft);
     emit ChargeHearts(_tokenId);
   }
@@ -126,12 +134,12 @@ contract NFT is ERC721Enumerable, Ownable {
 
   
 
-  function maxByLevel(uint _level) public view returns(uint256){
-    if(_level==Bronze) return MaxBronze;
-    if(_level==Silver) return MaxSilver;
-    if(_level==Gold) return MaxGold;
-    if(_level==Diamond) return MaxDiamond;
-  }
+  // function maxByLevel(uint _level) public view returns(uint256){
+  //   if(_level==Bronze) return MaxBronze;
+  //   if(_level==Silver) return MaxSilver;
+  //   if(_level==Gold) return MaxGold;
+  //   if(_level==Diamond) return MaxDiamond;
+  // }
 
   function getNftById(uint256 _tokenId) public view returns(Nft memory nft){
     for(uint indexOfArrayNfts=0;indexOfArrayNfts<nfts.length;indexOfArrayNfts++)
@@ -155,27 +163,27 @@ contract NFT is ERC721Enumerable, Ownable {
 
     if(level==Bronze &&  shield==false){
       require(points==bronzeNoShieldPoints,"your points not ------- for this transaction");
-      Nft memory newNft=Nft(getNftById(_tokenId).id,getNftById(_tokenId).level,getNftById(_tokenId).hearts,0,true);
+      Nft memory newNft=Nft(getNftById(_tokenId).id,2,getNftById(_tokenId).level,getNftById(_tokenId).hearts,0,true);
       updateNft(_tokenId,newNft);
     }
     else if(level==Bronze  && shield==true){
       require(points==bronzeShieldPoints,"your points not ------- for this transaction");
-      Nft memory newNft=Nft(getNftById(_tokenId).id,Silver,getNftById(_tokenId).hearts,0,false);
+      Nft memory newNft=Nft(getNftById(_tokenId).id,2,Silver,getNftById(_tokenId).hearts,0,false);
       updateNft(_tokenId,newNft);
     }
     else if(level==Silver  && shield==false){
       require(points==silverNoShieldPoints,"your points not ------- for this transaction");
-      Nft memory newNft=Nft(getNftById(_tokenId).id,getNftById(_tokenId).level,getNftById(_tokenId).hearts,0,true);
+      Nft memory newNft=Nft(getNftById(_tokenId).id,2,getNftById(_tokenId).level,getNftById(_tokenId).hearts,0,true);
       updateNft(_tokenId,newNft);
     }
     else if(level==Silver  && shield==true){
       require(points==1,"your points not ------- for this transaction");
-      Nft memory newNft=Nft(getNftById(_tokenId).id,Gold,getNftById(_tokenId).hearts,0,true);
+      Nft memory newNft=Nft(getNftById(_tokenId).id,2,Gold,getNftById(_tokenId).hearts,0,true);
       updateNft(_tokenId,newNft);
     }
     else if(level==Gold  && shield==true){
       require(points==silverShieldPoints,"your points not ------- for this transaction");
-      Nft memory newNft=Nft(getNftById(_tokenId).id,Diamond,getNftById(_tokenId).hearts,0,true);
+      Nft memory newNft=Nft(getNftById(_tokenId).id,2,Diamond,getNftById(_tokenId).hearts,0,true);
       updateNft(_tokenId,newNft);
     }
     emit UpLevel(_tokenId);
@@ -194,50 +202,36 @@ contract NFT is ERC721Enumerable, Ownable {
         bool sent = token.transferFrom(sender, recipient, amount);
         require(sent, "Token transfer failed");
     }
+    function random(uint number) public view returns(uint){
+        return uint(keccak256(abi.encodePacked(block.timestamp,block.difficulty,  
+        msg.sender))) % number;
+    }
 
 
 
 
+  function generateDna(uint _id,uint _type) public pure returns(uint){
+    string memory id=num2st(_id);
+    string memory types=num2st(_type);
+      return st2num(string(abi.encodePacked(id,types)));
+  }
 
-//   function generateDna(string memory _id,string memory _DateTime,string memory level,bool valid) public pure returns(string memory){
-//     string memory finalId=_id;
-//     string memory finalDate= _DateTime;
-//     string memory finalValid="";
-//     string memory zero ="0";
-//     require(bytes(_id).length<=5);
-//     if(bytes(_id).length<=5){
-//      for(uint i=0;i<5-bytes(_id).length;i++){
-//         finalId = string(abi.encodePacked(zero,finalId));
-//      }
-//     }
-//     require(bytes(_DateTime).length<=10);
-//     if(bytes(_DateTime).length<=10){
-//       for(uint i=0;i<10-bytes(_DateTime).length;i++){
-//          finalDate=string(abi.encodePacked(zero,finalDate));
-//       }
-//     }
-//     require(bytes(level).length==1);
-//     if(valid) finalValid="1";
-//     else finalValid="0";
-//     return string(abi.encodePacked(finalDate,level,finalValid,finalId));
-//   }
+  function st2num(string memory numString) public pure returns(uint) {
+        uint  val=0;
+        bytes   memory stringBytes = bytes(numString);
+        for (uint  i =  0; i<stringBytes.length; i++) {
+            uint exp = stringBytes.length - i;
+            bytes1 ival = stringBytes[i];
+            uint8 uval = uint8(ival);
+            uint jval = uval - uint(0x30);
+            val +=  (uint(jval) * (10**(exp-1))); 
+        }
+      return val;
+  }
 
-//   function st2num(string memory numString) public pure returns(uint) {
-//         uint  val=0;
-//         bytes   memory stringBytes = bytes(numString);
-//         for (uint  i =  0; i<stringBytes.length; i++) {
-//             uint exp = stringBytes.length - i;
-//             bytes1 ival = stringBytes[i];
-//             uint8 uval = uint8(ival);
-//             uint jval = uval - uint(0x30);
-//             val +=  (uint(jval) * (10**(exp-1))); 
-//         }
-//       return val;
-//   }
-
-//   function num2st(uint256 _uint) public pure returns(string memory){
-//     return Strings.toString(_uint);
-//   }
+  function num2st(uint256 _uint) public pure returns(string memory){
+    return Strings.toString(_uint);
+  }
 
   // function idFromStract(uint _dna) public view returns()
   
@@ -359,9 +353,7 @@ contract NFT is ERC721Enumerable, Ownable {
     // =============================================================================
   }
 
-   function random() public view returns (uint) {
-        return uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp))) % 100; 
-  }
+  
 
 
 
