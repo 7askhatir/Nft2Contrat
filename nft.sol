@@ -46,6 +46,14 @@ contract NFT is ERC721Enumerable, Ownable {
   uint256 silverNoShieldPoints=75;
   uint256 silverShieldPoints=80;
   uint256 goldPoints=80;
+  uint256 indexOfNftSimple=1;
+  uint256 indexOfNftT1P=1;
+  uint256 indexOfNftT2P=1;
+  uint256 indexOfNftT3P=1;
+  uint256 indexOfNftT4P=1;
+  uint256 indexOfNftT5P=1;
+  uint256 indexOfNftT6P=1;
+  uint256 indexOfNftT7P=1;
   ERC20 tokenAddress;
   struct Nft{
     uint id;
@@ -93,13 +101,83 @@ contract NFT is ERC721Enumerable, Ownable {
     ) ; 
   }
  //////////////// Ereeeeer in logique
-    function mint() public  {
+    function mint() public {
       
-      require(nuberBoxByOwner[msg.sender]>0,"You don't have boxes");  
-        _safeMint(msg.sender,tokenId);
-        Nft memory nft = Nft(tokenId,2,1,0,5,true);
+      // require(nuberBoxByOwner[msg.sender]>0,"You don't have boxes");  
+      uint types;
+      uint rendumNumber=random(999999)%10000;
+      if(rendumNumber>=0 && rendumNumber<=4503){
+         types=Simple;
+         uint idToken=generateDna(indexOfNftSimple,types);
+        _safeMint(msg.sender,idToken);
+        tokenId++;
+        Nft memory nft = Nft(idToken,types,Diamond,10,5,true);
         nfts.push(nft);
-        tokenId++;              
+
+      }
+      else if(rendumNumber>4503 && rendumNumber<=6603){
+        types= T1P;
+        uint idToken=generateDna(indexOfNftT1P,types);
+        _safeMint(msg.sender,idToken);
+        indexOfNftT1P++;
+        Nft memory nft = Nft(idToken,types,Bronze,10,5,true);
+        nfts.push(nft);
+
+      }
+      else if(rendumNumber>6603 && rendumNumber<=8503){
+        types=  T2P;
+        uint idToken=generateDna(indexOfNftT2P,types);
+        _safeMint(msg.sender,idToken);
+        indexOfNftT2P++;
+        Nft memory nft = Nft(idToken,types,Bronze,10,5,true);
+        nfts.push(nft);
+
+      }
+      else if(rendumNumber>8503 && rendumNumber<=9303){
+        types=  T3P;
+        uint idToken=generateDna(indexOfNftT3P,types);
+        _safeMint(msg.sender,idToken);
+        indexOfNftT3P++;
+        Nft memory nft = Nft(idToken,types,Silver,10,5,true);
+        nfts.push(nft);
+
+      }
+      else if(rendumNumber>9303 && rendumNumber<=9903){
+        types=  T4P;
+         uint idToken=generateDna(indexOfNftT4P,types);
+        _safeMint(msg.sender,idToken);
+        indexOfNftT4P++;
+        Nft memory nft = Nft(idToken,types,Silver,10,5,true);
+        nfts.push(nft);
+
+      }
+      else if(rendumNumber>9903 && rendumNumber<=9980){
+        types=  T5P;
+        uint idToken=generateDna(indexOfNftT5P,types);
+        _safeMint(msg.sender,idToken);
+        indexOfNftT5P++;
+        Nft memory nft = Nft(idToken,types,Gold,10,5,true);
+        nfts.push(nft);
+
+      }
+       else if(rendumNumber>9980 && rendumNumber<=9990){
+        types=  T6P;
+         uint idToken=generateDna(indexOfNftT6P,types);
+        _safeMint(msg.sender,idToken);
+        indexOfNftT6P++;
+        Nft memory nft = Nft(idToken,types,Gold,10,5,true);
+        nfts.push(nft);
+
+      } 
+       else if(rendumNumber>9990 && rendumNumber<=10000){
+        types=  T7P;
+         uint idToken=generateDna(indexOfNftT7P,types);
+        _safeMint(msg.sender,idToken);
+        indexOfNftT7P++;
+        Nft memory nft = Nft(idToken,types,Diamond,10,5,true);
+        nfts.push(nft);
+
+      } 
         nuberBoxByOwner[msg.sender]--; 
   }
   
@@ -211,9 +289,7 @@ contract NFT is ERC721Enumerable, Ownable {
 
 
   function generateDna(uint _id,uint _type) public pure returns(uint){
-    string memory id=num2st(_id);
-    string memory types=num2st(_type);
-      return st2num(string(abi.encodePacked(id,types)));
+      return st2num(string(abi.encodePacked(num2st(_id),num2st(_type))));
   }
 
   function st2num(string memory numString) public pure returns(uint) {
