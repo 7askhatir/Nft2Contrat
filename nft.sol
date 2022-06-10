@@ -93,91 +93,86 @@ contract NFT is ERC721Enumerable, Ownable {
   function ByBox() public payable{
      nuberBoxByOwner[msg.sender]++;
      emit NewBox(msg.sender);
-     _safeTransferFrom(
-        tokenAddress,
-        msg.sender,
-        ownerT,
-        123
-    ) ; 
+    //  _safeTransferFrom(
+    //     tokenAddress,
+    //     msg.sender,
+    //     ownerT,
+    //     123
+    // ) ; 
   }
  //////////////// Ereeeeer in logique
     function mint() public {
       
-      // require(nuberBoxByOwner[msg.sender]>0,"You don't have boxes");  
+      // require(nuberBoxByOwner[msg.sender]>0,"You don't have boxes"); 
+      Nft memory nft ;
       uint types;
+      uint idToken;
       uint rendumNumber=random(999999)%10000;
       if(rendumNumber>=0 && rendumNumber<=4503){
-         types=Simple;
-         uint idToken=generateDna(indexOfNftSimple,types);
-        _safeMint(msg.sender,idToken);
-        tokenId++;
-        Nft memory nft = Nft(idToken,types,Diamond,10,5,true);
-        nfts.push(nft);
+        uint level;
+        bool shield;
+        uint hearts;
+        types=Simple;
+        if(rendumNumber>=0 && rendumNumber<=1750){level=Bronze;shield=false;}
+        else if(rendumNumber>1750 && rendumNumber<=3500){level=Bronze;shield=true;}
+        else if(rendumNumber>3500 && rendumNumber<=4200){level=Silver;shield=false;}
+        else if(rendumNumber>4200 && rendumNumber<=4500){level=Silver;shield=true;}
+        else if(rendumNumber>4500 && rendumNumber<=4502){level=Gold;shield=true;}
+        else if(rendumNumber>4503 && rendumNumber<=4503){level=Diamond;shield=true;}
+        shield?hearts=maxheartsForShieldNft:hearts=maxheartsForSimpleNft;
+        idToken=generateDna(indexOfNftSimple,types);
+        indexOfNftSimple++;
+        nft = Nft(idToken,types,level,hearts,0,shield);
 
       }
       else if(rendumNumber>4503 && rendumNumber<=6603){
         types= T1P;
-        uint idToken=generateDna(indexOfNftT1P,types);
-        _safeMint(msg.sender,idToken);
+        idToken=generateDna(indexOfNftT1P,types);
         indexOfNftT1P++;
-        Nft memory nft = Nft(idToken,types,Bronze,10,5,true);
-        nfts.push(nft);
+        nft = Nft(idToken,types,Bronze,10,0,true);
 
       }
       else if(rendumNumber>6603 && rendumNumber<=8503){
         types=  T2P;
-        uint idToken=generateDna(indexOfNftT2P,types);
-        _safeMint(msg.sender,idToken);
+        idToken=generateDna(indexOfNftT2P,types);
         indexOfNftT2P++;
-        Nft memory nft = Nft(idToken,types,Bronze,10,5,true);
-        nfts.push(nft);
-
+        nft = Nft(idToken,types,Bronze,10,0,true);
       }
       else if(rendumNumber>8503 && rendumNumber<=9303){
         types=  T3P;
-        uint idToken=generateDna(indexOfNftT3P,types);
-        _safeMint(msg.sender,idToken);
+        idToken=generateDna(indexOfNftT3P,types);
         indexOfNftT3P++;
-        Nft memory nft = Nft(idToken,types,Silver,10,5,true);
-        nfts.push(nft);
+        nft = Nft(idToken,types,Silver,10,0,true);
 
       }
       else if(rendumNumber>9303 && rendumNumber<=9903){
         types=  T4P;
-         uint idToken=generateDna(indexOfNftT4P,types);
-        _safeMint(msg.sender,idToken);
+        idToken=generateDna(indexOfNftT4P,types);
         indexOfNftT4P++;
-        Nft memory nft = Nft(idToken,types,Silver,10,5,true);
-        nfts.push(nft);
-
+        nft = Nft(idToken,types,Silver,10,0,true);
       }
       else if(rendumNumber>9903 && rendumNumber<=9980){
         types=  T5P;
-        uint idToken=generateDna(indexOfNftT5P,types);
-        _safeMint(msg.sender,idToken);
+        idToken=generateDna(indexOfNftT5P,types);
         indexOfNftT5P++;
-        Nft memory nft = Nft(idToken,types,Gold,10,5,true);
-        nfts.push(nft);
-
+        nft = Nft(idToken,types,Gold,10,0,true);
       }
        else if(rendumNumber>9980 && rendumNumber<=9990){
         types=  T6P;
-         uint idToken=generateDna(indexOfNftT6P,types);
-        _safeMint(msg.sender,idToken);
+        idToken=generateDna(indexOfNftT6P,types);
         indexOfNftT6P++;
-        Nft memory nft = Nft(idToken,types,Gold,10,5,true);
-        nfts.push(nft);
+        nft = Nft(idToken,types,Gold,10,0,true);
 
       } 
        else if(rendumNumber>9990 && rendumNumber<=10000){
         types=  T7P;
-         uint idToken=generateDna(indexOfNftT7P,types);
-        _safeMint(msg.sender,idToken);
+        idToken=generateDna(indexOfNftT7P,types);
         indexOfNftT7P++;
-        Nft memory nft = Nft(idToken,types,Diamond,10,5,true);
-        nfts.push(nft);
+        nft = Nft(idToken,types,Diamond,10,0,true);
 
       } 
+        _safeMint(msg.sender,idToken);
+        nfts.push(nft);
         nuberBoxByOwner[msg.sender]--; 
   }
   
