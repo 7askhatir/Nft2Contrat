@@ -418,23 +418,23 @@ contract NFT is ERC721Enumerable, Ownable {
     paused = _state;
   }
 
-  function withdraw() public payable onlyOwner {
-       // This will payout the SLRM 15% of the contract balance.
-    (bool Ss, ) = payable(0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2).call{value: msg.sender.balance * 50 / 100}("");
-    require(Ss);
-    // =============================================================================
-     // This will payout the Roward Pool 15% of the contract balance.
-    (bool Rs, ) = payable(0x1A42d2D0006f165f260Ae4B1567D7A3a1496a74b).call{value: msg.sender.balance * 15 / 100}("");
-    require(Rs);
-       // =============================================================================
-     // This will payout Bonus Wallet 15% of the contract balance.
-    (bool Ws, ) = payable(0xB2cEd26a78c54FE6Cf6791aECAcCE378bbFca3fF).call{value: msg.sender.balance * 15 / 100}("");
-    require(Ws);
-    // This will payout the owner 20% of the contract balance.
-    // (bool os, ) = payable(owner()).call{value: msg.sender.balance}("");
-    // require(os);
-    // =============================================================================
-  }
+  // function withdraw() public payable onlyOwner {
+  //      // This will payout the SLRM 15% of the contract balance.
+  //   (bool Ss, ) = payable(0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2).call{value: msg.sender.balance * 50 / 100}("");
+  //   require(Ss);
+  //   // =============================================================================
+  //    // This will payout the Roward Pool 15% of the contract balance.
+  //   (bool Rs, ) = payable(0x1A42d2D0006f165f260Ae4B1567D7A3a1496a74b).call{value: msg.sender.balance * 15 / 100}("");
+  //   require(Rs);
+  //      // =============================================================================
+  //    // This will payout Bonus Wallet 15% of the contract balance.
+  //   (bool Ws, ) = payable(0xB2cEd26a78c54FE6Cf6791aECAcCE378bbFca3fF).call{value: msg.sender.balance * 15 / 100}("");
+  //   require(Ws);
+  //   // This will payout the owner 20% of the contract balance.
+  //   // (bool os, ) = payable(owner()).call{value: msg.sender.balance}("");
+  //   // require(os);
+  //   // =============================================================================
+  // }
 
   
 
