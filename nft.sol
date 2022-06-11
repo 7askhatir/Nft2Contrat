@@ -119,63 +119,63 @@ contract NFT is ERC721Enumerable, Ownable {
       uint types;
       uint idToken;
       uint rendumNumber=random();
-      if(rendumNumber>=0 && rendumNumber<=4503){
+      if(rendumNumber>=10){
         uint level;
         bool shield;
         uint hearts;
         types=Simple;
-        if(rendumNumber>=0 && rendumNumber<=1750){level=Bronze;shield=false;}
-        else if(rendumNumber>1750 && rendumNumber<=3500){level=Bronze;shield=true;}
-        else if(rendumNumber>3500 && rendumNumber<=4200){level=Silver;shield=false;}
-        else if(rendumNumber>4200 && rendumNumber<=4500){level=Silver;shield=true;}
-        else if(rendumNumber>4500 && rendumNumber<=4502){level=Gold;shield=true;}
-        else if(rendumNumber>4503 && rendumNumber<=4503){level=Diamond;shield=true;}
+        if(rendumNumber==10){level=Bronze;shield=false;}
+        else if(rendumNumber==20){level=Bronze;shield=true;}
+        else if(rendumNumber==30){level=Silver;shield=false;}
+        else if(rendumNumber==40){level=Silver;shield=true;}
+        else if(rendumNumber==50){level=Gold;shield=true;}
+        else if(rendumNumber==60){level=Diamond;shield=true;}
         shield?hearts=maxheartsForShieldNft:hearts=maxheartsForSimpleNft;
         idToken=generateDna(indexOfNftSimple,types);
         indexOfNftSimple++;
         nft = Nft(idToken,types,level,hearts,0,shield);
 
       }
-      else if(rendumNumber>4503 && rendumNumber<=6603){
+      else if(rendumNumber==1){
         types= T1P;
         idToken=generateDna(indexOfNftT1P,types);
         indexOfNftT1P++;
         nft = Nft(idToken,types,Bronze,10,0,true);
 
       }
-      else if(rendumNumber>6603 && rendumNumber<=8503){
+      else if(rendumNumber==2){
         types=  T2P;
         idToken=generateDna(indexOfNftT2P,types);
         indexOfNftT2P++;
         nft = Nft(idToken,types,Bronze,10,0,true);
       }
-      else if(rendumNumber>8503 && rendumNumber<=9303){
+      else if(rendumNumber==3){
         types=  T3P;
         idToken=generateDna(indexOfNftT3P,types);
         indexOfNftT3P++;
         nft = Nft(idToken,types,Silver,10,0,true);
 
       }
-      else if(rendumNumber>9303 && rendumNumber<=9903){
+      else if(rendumNumber==4){
         types=  T4P;
         idToken=generateDna(indexOfNftT4P,types);
         indexOfNftT4P++;
         nft = Nft(idToken,types,Silver,10,0,true);
       }
-      else if(rendumNumber>9903 && rendumNumber<=9980){
+      else if(rendumNumber==5){
         types=  T5P;
         idToken=generateDna(indexOfNftT5P,types);
         indexOfNftT5P++;
         nft = Nft(idToken,types,Gold,10,0,true);
       }
-       else if(rendumNumber>9980 && rendumNumber<=9990){
+       else if(rendumNumber==6){
         types=  T6P;
         idToken=generateDna(indexOfNftT6P,types);
         indexOfNftT6P++;
         nft = Nft(idToken,types,Gold,10,0,true);
 
       } 
-       else if(rendumNumber>9990 && rendumNumber<=10000){
+       else if(rendumNumber==7){
         types=  T7P;
         idToken=generateDna(indexOfNftT7P,types);
         indexOfNftT7P++;
@@ -220,12 +220,7 @@ contract NFT is ERC721Enumerable, Ownable {
       nfts[indexfNft]=_newNft;
  
   }
-  // 11,1,1,10,0,true,
-  // 10,0,1,5,0,false,
-  // 20,0,2,5,0,false,
-  // 30,0,1,5,0,false,
-  // 40,2,1,10,0,false
-
+  
   function getNftById(uint256 _tokenId) public view returns(Nft memory nft){
     for(uint indexOfArrayNfts=0;indexOfArrayNfts<nfts.length;indexOfArrayNfts++)
     if(nfts[indexOfArrayNfts].id==_tokenId)
@@ -285,7 +280,6 @@ contract NFT is ERC721Enumerable, Ownable {
       nfts.push(Nft(idToken,T3P,Silver,10,0,true));
       _safeMint(msg.sender,idToken);
     }
-    // 12,2,1,10,100,true
     else if(getTypeNftByTokenId(_tokenId)==T3P){
       require(indexOfNftT4P<=maxOfT4P,"There is nothing left in the next level");
       require(points>=T3PPoints,"your points not ------- for this transaction");
@@ -338,7 +332,7 @@ contract NFT is ERC721Enumerable, Ownable {
     function random() public view returns(uint ){
       uint rendumNumber = uint(keccak256(abi.encodePacked(block.timestamp,block.difficulty,  
       msg.sender))) % 10001;
-      if(rendumNumber>=0 && rendumNumber<=1750){random();}
+      if(rendumNumber>=0 && rendumNumber<=1750){return 10;}
       else if(rendumNumber>1750 && rendumNumber<=3500){return 20;}
       else if(rendumNumber>3500 && rendumNumber<=4200){return 30;}
       else if(rendumNumber>4200 && rendumNumber<=4500){return 40;}
