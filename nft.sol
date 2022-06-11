@@ -26,10 +26,6 @@ contract NFT is ERC721Enumerable, Ownable {
   uint8 public constant Silver=2;
   uint8 public constant Gold=3;
   uint8 public constant Diamond=4;
-  // uint256 public MaxBronze=100;
-  // uint256 public MaxSilver=200;
-  // uint256 public MaxGold=300;
-  // uint256 public MaxDiamond=400;
   uint8 public constant Simple=0;
   uint8 public constant T1P=1;
   uint8 public constant T2P=2;
@@ -113,17 +109,14 @@ contract NFT is ERC721Enumerable, Ownable {
   }
  //////////////// Ereeeeer in logique
     function mint() public {
-      
-      // require(nuberBoxByOwner[msg.sender]>0,"You don't have boxes"); 
+      require(nuberBoxByOwner[msg.sender]>0,"You don't have boxes"); 
       Nft memory nft ;
-      uint types;
       uint idToken;
       uint rendumNumber=random();
       if(rendumNumber>=10){
         uint level;
         bool shield;
         uint hearts;
-        types=Simple;
         if(rendumNumber==10){level=Bronze;shield=false;}
         else if(rendumNumber==20){level=Bronze;shield=true;}
         else if(rendumNumber==30){level=Silver;shield=false;}
@@ -131,55 +124,48 @@ contract NFT is ERC721Enumerable, Ownable {
         else if(rendumNumber==50){level=Gold;shield=true;}
         else if(rendumNumber==60){level=Diamond;shield=true;}
         shield?hearts=maxheartsForShieldNft:hearts=maxheartsForSimpleNft;
-        idToken=generateDna(indexOfNftSimple,types);
+        idToken=generateDna(indexOfNftSimple,Simple);
         indexOfNftSimple++;
-        nft = Nft(idToken,types,level,hearts,0,shield);
+        nft = Nft(idToken,Simple,level,hearts,0,shield);
 
       }
       else if(rendumNumber==1){
-        types= T1P;
-        idToken=generateDna(indexOfNftT1P,types);
+        idToken=generateDna(indexOfNftT1P,T1P);
         indexOfNftT1P++;
-        nft = Nft(idToken,types,Bronze,10,0,true);
+        nft = Nft(idToken,T1P,Bronze,10,0,true);
 
       }
       else if(rendumNumber==2){
-        types=  T2P;
-        idToken=generateDna(indexOfNftT2P,types);
+        idToken=generateDna(indexOfNftT2P,T2P);
         indexOfNftT2P++;
-        nft = Nft(idToken,types,Bronze,10,0,true);
+        nft = Nft(idToken,T2P,Bronze,10,0,true);
       }
       else if(rendumNumber==3){
-        types=  T3P;
-        idToken=generateDna(indexOfNftT3P,types);
+        idToken=generateDna(indexOfNftT3P,T3P);
         indexOfNftT3P++;
-        nft = Nft(idToken,types,Silver,10,0,true);
+        nft = Nft(idToken,T3P,Silver,10,0,true);
 
       }
       else if(rendumNumber==4){
-        types=  T4P;
-        idToken=generateDna(indexOfNftT4P,types);
+        idToken=generateDna(indexOfNftT4P,T4P);
         indexOfNftT4P++;
-        nft = Nft(idToken,types,Silver,10,0,true);
+        nft = Nft(idToken,T4P,Silver,10,0,true);
       }
       else if(rendumNumber==5){
-        types=  T5P;
-        idToken=generateDna(indexOfNftT5P,types);
+        idToken=generateDna(indexOfNftT5P,T5P);
         indexOfNftT5P++;
-        nft = Nft(idToken,types,Gold,10,0,true);
+        nft = Nft(idToken,T5P,Gold,10,0,true);
       }
        else if(rendumNumber==6){
-        types=  T6P;
-        idToken=generateDna(indexOfNftT6P,types);
+        idToken=generateDna(indexOfNftT6P,T6P);
         indexOfNftT6P++;
-        nft = Nft(idToken,types,Gold,10,0,true);
+        nft = Nft(idToken,T6P,Gold,10,0,true);
 
       } 
        else if(rendumNumber==7){
-        types=  T7P;
-        idToken=generateDna(indexOfNftT7P,types);
+        idToken=generateDna(indexOfNftT7P,T7P);
         indexOfNftT7P++;
-        nft = Nft(idToken,types,Diamond,10,0,true);
+        nft = Nft(idToken,T7P,Diamond,10,0,true);
 
       } 
         _safeMint(msg.sender,idToken);
@@ -197,7 +183,7 @@ contract NFT is ERC721Enumerable, Ownable {
 
 
   // thid function for fill nft hearts 
-  function chargeHearts(uint _tokenId) public {
+  function chargeHearts(uint _tokenId) public payable {
     require(ownerOf(_tokenId)==msg.sender,"your are not owner of this nft");
     require(getNftById(_tokenId).hearts==0,"You still have hearts");
     uint NumberOfHearts=0;
@@ -332,37 +318,22 @@ contract NFT is ERC721Enumerable, Ownable {
     function random() public view returns(uint ){
       uint rendumNumber = uint(keccak256(abi.encodePacked(block.timestamp,block.difficulty,  
       msg.sender))) % 10001;
-      if(rendumNumber>=0 && rendumNumber<=1750){return 10;}
-      else if(rendumNumber>1750 && rendumNumber<=3500){return 20;}
-      else if(rendumNumber>3500 && rendumNumber<=4200){return 30;}
-      else if(rendumNumber>4200 && rendumNumber<=4500){return 40;}
-      else if(rendumNumber>4500 && rendumNumber<=4502){return 50;}
-      else if(rendumNumber>4503 && rendumNumber<=4503){return 60;}
-      else if(rendumNumber>4503 && rendumNumber<=6603){
-        if(indexOfNftT1P>maxOfT1P)random();else return 1;
-      }
-      else if(rendumNumber>6603 && rendumNumber<=8503){
-        if(indexOfNftT2P>maxOfT2P)random(); else return 2;
-      }
-      else if(rendumNumber>8503 && rendumNumber<=9303){
-        if(indexOfNftT3P>maxOfT3P)random();else return 3;
-      }
-      else if(rendumNumber>9303 && rendumNumber<=9903){
-        if(indexOfNftT4P>maxOfT4P)random();else return 4;
-      }
-      else if(rendumNumber>9903 && rendumNumber<=9980){
-        if(indexOfNftT5P>maxOfT5P)random();else return 5;
-      }
-      else if(rendumNumber>9980 && rendumNumber<=9990){
-        if(indexOfNftT6P>maxOfT6P)random();else return 6;
-      } 
-      else if(rendumNumber>9990 && rendumNumber<=10000){
-        if(indexOfNftT7P>maxOfT7P)random();else return 7;
-      } 
+      uint returnNuber;
+      if(rendumNumber>=0 && rendumNumber<=1750){returnNuber= 10;}
+      else if(rendumNumber>1750 && rendumNumber<=3500)returnNuber=20;
+      else if(rendumNumber>3500 && rendumNumber<=4200)returnNuber=30;
+      else if(rendumNumber>4200 && rendumNumber<=4500)returnNuber=40;
+      else if(rendumNumber>4500 && rendumNumber<=4502)returnNuber=50;
+      else if(rendumNumber>4503 && rendumNumber<=4503)returnNuber=60;
+      else if(rendumNumber>4503 && rendumNumber<=6603)indexOfNftT1P>maxOfT1P?random():returnNuber= 1;
+      else if(rendumNumber>6603 && rendumNumber<=8503)indexOfNftT2P>maxOfT2P?random():returnNuber= 2;
+      else if(rendumNumber>8503 && rendumNumber<=9303)indexOfNftT3P>maxOfT3P?random():returnNuber= 3;
+      else if(rendumNumber>9303 && rendumNumber<=9903)indexOfNftT4P>maxOfT4P?random():returnNuber= 4;
+      else if(rendumNumber>9903 && rendumNumber<=9980)indexOfNftT5P>maxOfT5P?random():returnNuber= 5;
+      else if(rendumNumber>9980 && rendumNumber<=9990)indexOfNftT6P>maxOfT6P?random():returnNuber= 6;
+      else if(rendumNumber>9990 && rendumNumber<=10000)indexOfNftT7P>maxOfT7P?random():returnNuber= 7;
+      return rendumNumber;
     }
-
-
-
 
   function generateDna(uint _id,uint _type) public pure returns(uint){
       return st2num(string(abi.encodePacked(num2st(_id),num2st(_type))));
@@ -388,37 +359,9 @@ contract NFT is ERC721Enumerable, Ownable {
     Type=_tokenId%10;
   }
 
-  // function idFromStract(uint _dna) public view returns()
-  
-
-  // function dnaToNftStruct(uint _dna) public pure returns(Nft memory){
-   
-  //   string memory idString="";
-  //   for(uint i=0;i<5;i++){
-  //     idString = string(abi.encodePacked(idString, num2st(_dna)));
-  //   }
-  //   uint id;
-    
-  // }
-
-
-
-
-
-
-
-
-  
-  // function generateDna() public view returns(uint){
-  //     return 1;
-  // }
-  // internal
   function _baseURI() internal view virtual override returns (string memory) {
     return baseURI;
   }
-
-  // public
-
 
   function getAllNfts() public view returns(Nft[] memory){
     return nfts;
@@ -459,9 +402,6 @@ contract NFT is ERC721Enumerable, Ownable {
         : "";
   }
 
- 
-
-  //only owner
   function reveal() public onlyOwner {
       revealed = true;
   }
@@ -490,23 +430,6 @@ contract NFT is ERC721Enumerable, Ownable {
     paused = _state;
   }
 
-  // function withdraw() public payable onlyOwner {
-  //      // This will payout the SLRM 15% of the contract balance.
-  //   (bool Ss, ) = payable(0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2).call{value: msg.sender.balance * 50 / 100}("");
-  //   require(Ss);
-  //   // =============================================================================
-  //    // This will payout the Roward Pool 15% of the contract balance.
-  //   (bool Rs, ) = payable(0x1A42d2D0006f165f260Ae4B1567D7A3a1496a74b).call{value: msg.sender.balance * 15 / 100}("");
-  //   require(Rs);
-  //      // =============================================================================
-  //    // This will payout Bonus Wallet 15% of the contract balance.
-  //   (bool Ws, ) = payable(0xB2cEd26a78c54FE6Cf6791aECAcCE378bbFca3fF).call{value: msg.sender.balance * 15 / 100}("");
-  //   require(Ws);
-  //   // This will payout the owner 20% of the contract balance.
-  //   // (bool os, ) = payable(owner()).call{value: msg.sender.balance}("");
-  //   // require(os);
-  //   // =============================================================================
-  // }
 
   
 
