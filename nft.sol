@@ -335,9 +335,36 @@ contract NFT is ERC721Enumerable, Ownable {
         bool sent = token.transferFrom(sender, recipient, amount);
         require(sent, "Token transfer failed");
     }
-    function random() public view returns(uint){
-        return uint(keccak256(abi.encodePacked(block.timestamp,block.difficulty,  
-        msg.sender))) % 10000;
+    function random() public view returns(uint ){
+      uint rendumNumber = uint(keccak256(abi.encodePacked(block.timestamp,block.difficulty,  
+      msg.sender))) % 10001;
+      if(rendumNumber>=0 && rendumNumber<=1750){random();}
+      else if(rendumNumber>1750 && rendumNumber<=3500){return 20;}
+      else if(rendumNumber>3500 && rendumNumber<=4200){return 30;}
+      else if(rendumNumber>4200 && rendumNumber<=4500){return 40;}
+      else if(rendumNumber>4500 && rendumNumber<=4502){return 50;}
+      else if(rendumNumber>4503 && rendumNumber<=4503){return 60;}
+      else if(rendumNumber>4503 && rendumNumber<=6603){
+        if(indexOfNftT1P>maxOfT1P)random();else return 1;
+      }
+      else if(rendumNumber>6603 && rendumNumber<=8503){
+        if(indexOfNftT2P>maxOfT2P)random(); else return 2;
+      }
+      else if(rendumNumber>8503 && rendumNumber<=9303){
+        if(indexOfNftT3P>maxOfT3P)random();else return 3;
+      }
+      else if(rendumNumber>9303 && rendumNumber<=9903){
+        if(indexOfNftT4P>maxOfT4P)random();else return 4;
+      }
+      else if(rendumNumber>9903 && rendumNumber<=9980){
+        if(indexOfNftT5P>maxOfT5P)random();else return 5;
+      }
+      else if(rendumNumber>9980 && rendumNumber<=9990){
+        if(indexOfNftT6P>maxOfT6P)random();else return 6;
+      } 
+      else if(rendumNumber>9990 && rendumNumber<=10000){
+        if(indexOfNftT7P>maxOfT7P)random();else return 7;
+      } 
     }
 
 
