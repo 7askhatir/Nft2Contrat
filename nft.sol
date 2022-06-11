@@ -45,6 +45,12 @@ contract NFT is ERC721Enumerable, Ownable {
   uint256 bronzeShieldPoints=60;
   uint256 silverNoShieldPoints=75;
   uint256 silverShieldPoints=80;
+  uint256 T1PPoints=50;
+  uint256 T2PPoints=50;
+  uint256 T3PPoints=60;
+  uint256 T4PPoints=60;
+  uint256 T5PPoints=75;
+  uint256 T6PPoints=75;
   uint256 goldPoints=80;
   uint256 indexOfNftSimple=1;
   uint256 indexOfNftT1P=1;
@@ -74,10 +80,8 @@ contract NFT is ERC721Enumerable, Ownable {
     string memory _name,
     string memory _symbol,
     string memory _initBaseURI,
-    string memory _initNotRevealedUri,
-    address _token
+    string memory _initNotRevealedUri
   ) ERC721(_name, _symbol) {
-    tokenAddress=ERC20(_token);
     setBaseURI(_initBaseURI);
     setNotRevealedURI(_initNotRevealedUri);
     ownerT=msg.sender;
@@ -197,13 +201,23 @@ contract NFT is ERC721Enumerable, Ownable {
     emit ChargeHearts(_tokenId);
   }
 
+  function chargePoints(uint _tokenId) public {
+    Nft memory newNft=Nft(getNftById(_tokenId).id,2,getNftById(_tokenId).level,10,100,getNftById(_tokenId).Shield);
+    updateNft(_tokenId,newNft);
+    emit ChargeHearts(_tokenId);
+  }
+
   function updateNft(uint _tokenId,Nft memory _newNft) public {
      for(uint indexfNft=0;indexfNft<nfts.length;indexfNft++)
       if(nfts[indexfNft].id==_tokenId)
       nfts[indexfNft]=_newNft;
  
   }
-
+  // 11,1,1,10,0,true,
+  // 10,0,1,5,0,false,
+  // 20,0,2,5,0,false,
+  // 30,0,1,5,0,false,
+  // 40,2,1,10,0,false
 
   function getNftById(uint256 _tokenId) public view returns(Nft memory nft){
     for(uint indexOfArrayNfts=0;indexOfArrayNfts<nfts.length;indexOfArrayNfts++)
@@ -221,32 +235,33 @@ contract NFT is ERC721Enumerable, Ownable {
 
     if(getTypeNftByTokenId(_tokenId)==Simple){
         if(level==Bronze &&  shield==false){
-          // require(points==bronzeNoShieldPoints,"your points not ------- for this transaction");
+          require(points>=bronzeNoShieldPoints,"your points not1 ------- for this transaction");
           Nft memory newNft=Nft(getNftById(_tokenId).id,2,getNftById(_tokenId).level,getNftById(_tokenId).hearts,0,true);
           updateNft(_tokenId,newNft);
         }
         else if(level==Bronze  && shield==true){
-          require(points==bronzeShieldPoints,"your points not ------- for this transaction");
+          require(points>=bronzeShieldPoints,"your points not2 ------- for this transaction");
           Nft memory newNft=Nft(getNftById(_tokenId).id,2,Silver,getNftById(_tokenId).hearts,0,false);
           updateNft(_tokenId,newNft);
         }
-        else if(level==Silver  && shield==false){
-          require(points==silverNoShieldPoints,"your points not ------- for this transaction");
+        else if(level>=Silver  && shield==false){
+          require(points>=silverNoShieldPoints,"your points not3 ------- for this transaction");
           Nft memory newNft=Nft(getNftById(_tokenId).id,2,getNftById(_tokenId).level,getNftById(_tokenId).hearts,0,true);
           updateNft(_tokenId,newNft);
         }
-        else if(level==Silver  && shield==true){
-          require(points==1,"your points not ------- for this transaction");
+        else if(level<=Silver  && shield==true){
+          require(points>=1,"your points not4 ------- for this transaction");
           Nft memory newNft=Nft(getNftById(_tokenId).id,2,Gold,getNftById(_tokenId).hearts,0,true);
           updateNft(_tokenId,newNft);
         }
         else if(level==Gold  && shield==true){
-          require(points==silverShieldPoints,"your points not ------- for this transaction");
+          require(points>=silverShieldPoints,"your points not ------- for this transaction");
           Nft memory newNft=Nft(getNftById(_tokenId).id,2,Diamond,getNftById(_tokenId).hearts,0,true);
           updateNft(_tokenId,newNft);
         }
     }
     else if(getTypeNftByTokenId(_tokenId)==T1P){
+      require(points>=T1PPoints,"your points not ------- for this transaction");
       transferFrom(msg.sender,address(this),_tokenId);
       uint idToken=generateDna(indexOfNftT2P,T2P);
       indexOfNftT2P++;
@@ -254,6 +269,7 @@ contract NFT is ERC721Enumerable, Ownable {
       _safeMint(msg.sender,idToken);
     }
     else if(getTypeNftByTokenId(_tokenId)==T2P){
+      require(points>=T2PPoints,"your points not ------- for this transaction");
       transferFrom(msg.sender,address(this),_tokenId);
       uint idToken=generateDna(indexOfNftT3P,T3P);
       indexOfNftT3P++;
@@ -261,6 +277,7 @@ contract NFT is ERC721Enumerable, Ownable {
       _safeMint(msg.sender,idToken);
     }
     else if(getTypeNftByTokenId(_tokenId)==T3P){
+      require(points>=T3PPoints,"your points not ------- for this transaction");
       transferFrom(msg.sender,address(this),_tokenId);
       uint idToken=generateDna(indexOfNftT4P,T4P);
       indexOfNftT4P++;
@@ -268,6 +285,7 @@ contract NFT is ERC721Enumerable, Ownable {
       _safeMint(msg.sender,idToken);
     }
     else if(getTypeNftByTokenId(_tokenId)==T4P){
+      require(points>=T4PPoints,"your points not ------- for this transaction");
         transferFrom(msg.sender,address(this),_tokenId);
         uint idToken=generateDna(indexOfNftT5P,T5P);
         indexOfNftT5P++;
@@ -275,6 +293,7 @@ contract NFT is ERC721Enumerable, Ownable {
         _safeMint(msg.sender,idToken);
     }
     else if(getTypeNftByTokenId(_tokenId)==T5P){
+      require(points>=T5PPoints,"your points not ------- for this transaction");
         transferFrom(msg.sender,address(this),_tokenId);
         uint idToken=generateDna(indexOfNftT6P,T6P);
         indexOfNftT6P++;
@@ -282,6 +301,7 @@ contract NFT is ERC721Enumerable, Ownable {
         _safeMint(msg.sender,idToken);
     }
     else if(getTypeNftByTokenId(_tokenId)==T6P){
+      require(points>=T6PPoints,"your points not ------- for this transaction");
         transferFrom(msg.sender,address(this),_tokenId);
         uint idToken=generateDna(indexOfNftT7P,T7P);
         indexOfNftT7P++;
