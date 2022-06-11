@@ -60,6 +60,13 @@ contract NFT is ERC721Enumerable, Ownable {
   uint256 indexOfNftT5P=1;
   uint256 indexOfNftT6P=1;
   uint256 indexOfNftT7P=1;
+  uint maxOfT1P=10;
+  uint maxOfT2P=10;
+  uint maxOfT3P=10;
+  uint maxOfT4P=10;
+  uint maxOfT5P=10;
+  uint maxOfT6P=10;
+  uint maxOfT7P=10;
   ERC20 tokenAddress;
   struct Nft{
     uint id;
@@ -111,7 +118,7 @@ contract NFT is ERC721Enumerable, Ownable {
       Nft memory nft ;
       uint types;
       uint idToken;
-      uint rendumNumber=random(999999)%10000;
+      uint rendumNumber=random();
       if(rendumNumber>=0 && rendumNumber<=4503){
         uint level;
         bool shield;
@@ -261,6 +268,7 @@ contract NFT is ERC721Enumerable, Ownable {
         }
     }
     else if(getTypeNftByTokenId(_tokenId)==T1P){
+      require(indexOfNftT2P<=maxOfT1P,"There is nothing left in the next level");
       require(points>=T1PPoints,"your points not ------- for this transaction");
       transferFrom(msg.sender,address(this),_tokenId);
       uint idToken=generateDna(indexOfNftT2P,T2P);
@@ -269,6 +277,7 @@ contract NFT is ERC721Enumerable, Ownable {
       _safeMint(msg.sender,idToken);
     }
     else if(getTypeNftByTokenId(_tokenId)==T2P){
+      require(indexOfNftT3P<=maxOfT3P,"There is nothing left in the next level");
       require(points>=T2PPoints,"your points not ------- for this transaction");
       transferFrom(msg.sender,address(this),_tokenId);
       uint idToken=generateDna(indexOfNftT3P,T3P);
@@ -276,7 +285,9 @@ contract NFT is ERC721Enumerable, Ownable {
       nfts.push(Nft(idToken,T3P,Silver,10,0,true));
       _safeMint(msg.sender,idToken);
     }
+    // 12,2,1,10,100,true
     else if(getTypeNftByTokenId(_tokenId)==T3P){
+      require(indexOfNftT4P<=maxOfT4P,"There is nothing left in the next level");
       require(points>=T3PPoints,"your points not ------- for this transaction");
       transferFrom(msg.sender,address(this),_tokenId);
       uint idToken=generateDna(indexOfNftT4P,T4P);
@@ -285,6 +296,7 @@ contract NFT is ERC721Enumerable, Ownable {
       _safeMint(msg.sender,idToken);
     }
     else if(getTypeNftByTokenId(_tokenId)==T4P){
+      require(indexOfNftT5P<=maxOfT5P,"There is nothing left in the next level");
       require(points>=T4PPoints,"your points not ------- for this transaction");
         transferFrom(msg.sender,address(this),_tokenId);
         uint idToken=generateDna(indexOfNftT5P,T5P);
@@ -293,6 +305,7 @@ contract NFT is ERC721Enumerable, Ownable {
         _safeMint(msg.sender,idToken);
     }
     else if(getTypeNftByTokenId(_tokenId)==T5P){
+      require(indexOfNftT6P<=maxOfT6P,"There is nothing left in the next level");
       require(points>=T5PPoints,"your points not ------- for this transaction");
         transferFrom(msg.sender,address(this),_tokenId);
         uint idToken=generateDna(indexOfNftT6P,T6P);
@@ -301,6 +314,7 @@ contract NFT is ERC721Enumerable, Ownable {
         _safeMint(msg.sender,idToken);
     }
     else if(getTypeNftByTokenId(_tokenId)==T6P){
+      require(indexOfNftT7P<=maxOfT7P,"There is nothing left in the next level");
       require(points>=T6PPoints,"your points not ------- for this transaction");
         transferFrom(msg.sender,address(this),_tokenId);
         uint idToken=generateDna(indexOfNftT7P,T7P);
@@ -321,9 +335,9 @@ contract NFT is ERC721Enumerable, Ownable {
         bool sent = token.transferFrom(sender, recipient, amount);
         require(sent, "Token transfer failed");
     }
-    function random(uint number) public view returns(uint){
+    function random() public view returns(uint){
         return uint(keccak256(abi.encodePacked(block.timestamp,block.difficulty,  
-        msg.sender))) % number;
+        msg.sender))) % 10000;
     }
 
 
