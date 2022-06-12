@@ -115,61 +115,70 @@ contract NFT is ERC721Enumerable, Ownable {
       uint rendumNumber=random();
       if(rendumNumber>=10){
         uint level;
-        bool shield;
+        bool shieldBool;
         uint hearts;
-        if(rendumNumber==10){level=Bronze;shield=false;}
-        else if(rendumNumber==20){level=Bronze;shield=true;}
-        else if(rendumNumber==30){level=Silver;shield=false;}
-        else if(rendumNumber==40){level=Silver;shield=true;}
-        else if(rendumNumber==50){level=Gold;shield=true;}
-        else if(rendumNumber==60){level=Diamond;shield=true;}
-        shield?hearts=maxheartsForShieldNft:hearts=maxheartsForSimpleNft;
+        if(rendumNumber==10){level=Bronze;shieldBool=false;}
+        else if(rendumNumber==20){level=Bronze;shieldBool=true;}
+        else if(rendumNumber==30){level=Silver;shieldBool=false;}
+        else if(rendumNumber==40){level=Silver;shieldBool=true;}
+        else if(rendumNumber==50){level=Gold;shieldBool=true;}
+        else if(rendumNumber==60){level=Diamond;shieldBool=true;}
+        shieldBool?hearts=maxheartsForShieldNft:hearts=maxheartsForSimpleNft;
         idToken=generateDna(indexOfNftSimple,Simple);
         indexOfNftSimple++;
-        nft = Nft(idToken,Simple,level,hearts,0,shield);
+        nft = Nft(idToken,Simple,level,hearts,0,shieldBool);
+        nfts.push(nft);
 
       }
       else if(rendumNumber==1){
         idToken=generateDna(indexOfNftT1P,T1P);
         indexOfNftT1P++;
         nft = Nft(idToken,T1P,Bronze,10,0,true);
+        nfts.push(nft);
 
       }
       else if(rendumNumber==2){
         idToken=generateDna(indexOfNftT2P,T2P);
         indexOfNftT2P++;
         nft = Nft(idToken,T2P,Bronze,10,0,true);
+        nfts.push(nft);
+
       }
       else if(rendumNumber==3){
         idToken=generateDna(indexOfNftT3P,T3P);
         indexOfNftT3P++;
         nft = Nft(idToken,T3P,Silver,10,0,true);
+        nfts.push(nft);
 
       }
       else if(rendumNumber==4){
         idToken=generateDna(indexOfNftT4P,T4P);
         indexOfNftT4P++;
         nft = Nft(idToken,T4P,Silver,10,0,true);
+        nfts.push(nft);
       }
       else if(rendumNumber==5){
         idToken=generateDna(indexOfNftT5P,T5P);
         indexOfNftT5P++;
         nft = Nft(idToken,T5P,Gold,10,0,true);
+        nfts.push(nft);
+
       }
        else if(rendumNumber==6){
         idToken=generateDna(indexOfNftT6P,T6P);
         indexOfNftT6P++;
         nft = Nft(idToken,T6P,Gold,10,0,true);
+        nfts.push(nft);
 
       } 
        else if(rendumNumber==7){
         idToken=generateDna(indexOfNftT7P,T7P);
         indexOfNftT7P++;
         nft = Nft(idToken,T7P,Diamond,10,0,true);
+        nfts.push(nft);
 
       } 
         _safeMint(msg.sender,idToken);
-        nfts.push(nft);
         nuberBoxByOwner[msg.sender]--; 
   }
   
@@ -193,6 +202,11 @@ contract NFT is ERC721Enumerable, Ownable {
     updateNft(_tokenId,newNft);
     emit ChargeHearts(_tokenId);
   }
+  function UpdateShieled(uint _tokenId) public {
+    for(uint indexfNft=0;indexfNft<nfts.length;indexfNft++)
+      if(nfts[indexfNft].id==_tokenId)
+      nfts[indexfNft].Shield=!nfts[indexfNft].Shield;
+  }
 
   function chargePoints(uint _tokenId) public {
     Nft memory newNft=Nft(getNftById(_tokenId).id,2,getNftById(_tokenId).level,10,100,getNftById(_tokenId).Shield);
@@ -202,9 +216,14 @@ contract NFT is ERC721Enumerable, Ownable {
 
   function updateNft(uint _tokenId,Nft memory _newNft) public {
      for(uint indexfNft=0;indexfNft<nfts.length;indexfNft++)
-      if(nfts[indexfNft].id==_tokenId)
-      nfts[indexfNft]=_newNft;
- 
+      if(nfts[indexfNft].id==_tokenId){
+        nfts[indexfNft].id=_newNft.id;
+        nfts[indexfNft].Type=_newNft.Type;
+        nfts[indexfNft].level=_newNft.level;
+        nfts[indexfNft].hearts=_newNft.hearts;
+        nfts[indexfNft].points=_newNft.points;
+        nfts[indexfNft].Shield=_newNft.Shield;
+      }
   }
   
   function getNftById(uint256 _tokenId) public view returns(Nft memory nft){
@@ -224,8 +243,7 @@ contract NFT is ERC721Enumerable, Ownable {
     if(getTypeNftByTokenId(_tokenId)==Simple){
         if(level==Bronze &&  shield==false){
           require(points>=bronzeNoShieldPoints,"your points not1 ------- for this transaction");
-          Nft memory newNft=Nft(getNftById(_tokenId).id,2,getNftById(_tokenId).level,getNftById(_tokenId).hearts,0,true);
-          updateNft(_tokenId,newNft);
+          updateNft(_tokenId,Nft(getNftById(_tokenId).id,2,getNftById(_tokenId).level,getNftById(_tokenId).hearts,0,true));
         }
         else if(level==Bronze  && shield==true){
           require(points>=bronzeShieldPoints,"your points not2 ------- for this transaction");
@@ -332,7 +350,7 @@ contract NFT is ERC721Enumerable, Ownable {
       else if(rendumNumber>9903 && rendumNumber<=9980)indexOfNftT5P>maxOfT5P?random():returnNuber= 5;
       else if(rendumNumber>9980 && rendumNumber<=9990)indexOfNftT6P>maxOfT6P?random():returnNuber= 6;
       else if(rendumNumber>9990 && rendumNumber<=10000)indexOfNftT7P>maxOfT7P?random():returnNuber= 7;
-      return rendumNumber;
+      return returnNuber;
     }
 
   function generateDna(uint _id,uint _type) public pure returns(uint){
@@ -429,18 +447,5 @@ contract NFT is ERC721Enumerable, Ownable {
   function pause(bool _state) public onlyOwner {
     paused = _state;
   }
-
-
-  
-
-
-
-   
-   
-  
- 
-
-  
-
 
 }
