@@ -90,12 +90,15 @@ contract NFT is ERC721Enumerable, Ownable {
     ownerT=msg.sender;
   }
 
-  //  function changeMaxLevel(uint256 _MaxBronze, uint256 _MaxSilver,uint256 _MaxGold,uint256 _MaxDiamond) public onlyOwner{
-  //      MaxBronze=_MaxBronze;
-  //      MaxSilver=_MaxSilver;
-  //      MaxGold=_MaxGold;
-  //      MaxDiamond=_MaxDiamond;
-  // }
+   function changeMaxLevel(uint256 _maxOfT1P, uint256 _maxOfT2P,uint256 _maxOfT3P,uint256 _maxOfT4P,uint256 _maxOfT5P,uint256 _maxOfT6P,uint256 _maxOfT7P) public onlyOwner{
+      maxOfT1P=_maxOfT1P;
+      maxOfT2P=_maxOfT2P;
+      maxOfT3P=_maxOfT3P;
+      maxOfT4P=_maxOfT4P;
+      maxOfT5P=_maxOfT5P;
+      maxOfT6P=_maxOfT6P;
+      maxOfT7P=_maxOfT7P;
+  }
 
   function ByBox() public payable{
      nuberBoxByOwner[msg.sender]++;
