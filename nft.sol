@@ -1,5 +1,4 @@
-  // SPDX-License-Identifier: MIT
-
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
@@ -79,12 +78,18 @@ contract NFT is ERC721Enumerable, Ownable {
   mapping (uint => Nft) public nftPropriety;
   mapping (address =>uint) nuberBoxByOwner;
   address ownerT;
+
+ bytes32 internal keyHash; // identifies which Chainlink oracle to use
+    uint internal fee;        // fee to get random number
+    uint public randomResult;
+
+
   constructor(
     string memory _name,
     string memory _symbol,
     string memory _initBaseURI,
     string memory _initNotRevealedUri
-  ) ERC721(_name, _symbol) {
+  ) ERC721(_name, _symbol)  {
     setBaseURI(_initBaseURI);
     setNotRevealedURI(_initNotRevealedUri);
     ownerT=msg.sender;
@@ -110,6 +115,9 @@ contract NFT is ERC721Enumerable, Ownable {
     //     123
     // ) ; 
   }
+   function getNumberOfBoxByOwne(address _owner) public view returns(uint){
+     return nuberBoxByOwner[_owner];
+   }
  //////////////// Ereeeeer in logique
     function mint() public {
       require(nuberBoxByOwner[msg.sender]>0,"You don't have boxes"); 
@@ -119,6 +127,7 @@ contract NFT is ERC721Enumerable, Ownable {
       if(rendumNumber>=10){
         uint level;
         bool shieldBool;
+        
         uint hearts;
         if(rendumNumber==10){level=Bronze;shieldBool=false;}
         else if(rendumNumber==20){level=Bronze;shieldBool=true;}
@@ -249,32 +258,32 @@ contract NFT is ERC721Enumerable, Ownable {
     uint256 points=getNftById(_tokenId).points;
     bool shield=getNftById(_tokenId).Shield;
     uint hearts=getNftById(_tokenId).hearts;
-    require(level<=Diamond,"this is super level");
+    require(level<Diamond,"this is super level");
     require(ownerOf(_tokenId)==msg.sender,"your are not owner of this nft");
 
     if(getTypeNftByTokenId(_tokenId)==Simple){
         if(level==Bronze &&  shield==false){
           require(points>=bronzeNoShieldPoints,"your points not1 ------- for this transaction");
-          updateNft(_tokenId,Nft(getNftById(_tokenId).id,Simple,level,hearts,0,true));
+          updateNft(_tokenId,Nft(getNftById(_tokenId).id,Simple,level,hearts,points,true));
         }
         else if(level==Bronze  && shield==true){
           require(points>=bronzeShieldPoints,"your points not2 ------- for this transaction");
-          Nft memory newNft=Nft(getNftById(_tokenId).id,Simple,Silver,hearts,0,false);
+          Nft memory newNft=Nft(getNftById(_tokenId).id,Simple,Silver,hearts,points,false);
           updateNft(_tokenId,newNft);
         }
         else if(level>=Silver  && shield==false){
           require(points>=silverNoShieldPoints,"your points not3 ------- for this transaction");
-          Nft memory newNft=Nft(getNftById(_tokenId).id,Simple,level,hearts,0,true);
+          Nft memory newNft=Nft(getNftById(_tokenId).id,Simple,level,hearts,points,true);
           updateNft(_tokenId,newNft);
         }
         else if(level<=Silver  && shield==true){
           require(points>=1,"your points not4 ------- for this transaction");
-          Nft memory newNft=Nft(getNftById(_tokenId).id,Simple,Gold,hearts,0,true);
+          Nft memory newNft=Nft(getNftById(_tokenId).id,Simple,Gold,hearts,points,true);
           updateNft(_tokenId,newNft);
         }
         else if(level==Gold  && shield==true){
           require(points>=silverShieldPoints,"your points not ------- for this transaction");
-          Nft memory newNft=Nft(getNftById(_tokenId).id,Simple,Diamond,hearts,0,true);
+          Nft memory newNft=Nft(getNftById(_tokenId).id,Simple,Diamond,hearts,points,true);
           updateNft(_tokenId,newNft);
         }
     }
@@ -284,7 +293,7 @@ contract NFT is ERC721Enumerable, Ownable {
       transferFrom(msg.sender,address(this),_tokenId);
       uint idToken=generateDna(indexOfNftT2P,T2P);
       indexOfNftT2P++;
-      nfts.push(Nft(idToken,T2P,Bronze,hearts,0,true));
+      nfts.push(Nft(idToken,T2P,Bronze,hearts,points,true));
       _safeMint(msg.sender,idToken);
     }
     else if(getTypeNftByTokenId(_tokenId)==T2P){
@@ -293,7 +302,7 @@ contract NFT is ERC721Enumerable, Ownable {
       transferFrom(msg.sender,address(this),_tokenId);
       uint idToken=generateDna(indexOfNftT3P,T3P);
       indexOfNftT3P++;
-      nfts.push(Nft(idToken,T3P,Silver,hearts,0,true));
+      nfts.push(Nft(idToken,T3P,Silver,hearts,points,true));
       _safeMint(msg.sender,idToken);
     }
     else if(getTypeNftByTokenId(_tokenId)==T3P){
@@ -302,7 +311,7 @@ contract NFT is ERC721Enumerable, Ownable {
       transferFrom(msg.sender,address(this),_tokenId);
       uint idToken=generateDna(indexOfNftT4P,T4P);
       indexOfNftT4P++;
-      nfts.push(Nft(idToken,T4P,Silver,hearts,0,true));
+      nfts.push(Nft(idToken,T4P,Silver,hearts,points,true));
       _safeMint(msg.sender,idToken);
     }
     else if(getTypeNftByTokenId(_tokenId)==T4P){
@@ -311,7 +320,7 @@ contract NFT is ERC721Enumerable, Ownable {
         transferFrom(msg.sender,address(this),_tokenId);
         uint idToken=generateDna(indexOfNftT5P,T5P);
         indexOfNftT5P++;
-        nfts.push(Nft(idToken,T5P,Gold,hearts,0,true));
+        nfts.push(Nft(idToken,T5P,Gold,hearts,points,true));
         _safeMint(msg.sender,idToken);
     }
     else if(getTypeNftByTokenId(_tokenId)==T5P){
@@ -320,7 +329,7 @@ contract NFT is ERC721Enumerable, Ownable {
         transferFrom(msg.sender,address(this),_tokenId);
         uint idToken=generateDna(indexOfNftT6P,T6P);
         indexOfNftT6P++;
-        nfts.push(Nft(idToken,T6P,Gold,hearts,0,true));
+        nfts.push(Nft(idToken,T6P,Gold,hearts,points,true));
         _safeMint(msg.sender,idToken);
     }
     else if(getTypeNftByTokenId(_tokenId)==T6P){
@@ -329,7 +338,7 @@ contract NFT is ERC721Enumerable, Ownable {
         transferFrom(msg.sender,address(this),_tokenId);
         uint idToken=generateDna(indexOfNftT7P,T7P);
         indexOfNftT7P++;
-        nfts.push(Nft(idToken,T7P,Diamond,hearts,0,true));
+        nfts.push(Nft(idToken,T7P,Diamond,hearts,points,true));
         _safeMint(msg.sender,idToken);
     }
     emit UpLevel(_tokenId);
@@ -428,7 +437,7 @@ contract NFT is ERC721Enumerable, Ownable {
 
     string memory currentBaseURI = _baseURI();
     return bytes(currentBaseURI).length > 0
-        ? string(abi.encodePacked(currentBaseURI, tokenId.toString(), baseExtension))
+        ? string(abi.encodePacked(currentBaseURI,"/",_tokenId.mod(10).toString(),"/", _tokenId.div(10).toString(), baseExtension))
         : "";
   }
 
@@ -450,6 +459,9 @@ contract NFT is ERC721Enumerable, Ownable {
 
   function setBaseURI(string memory _newBaseURI) public onlyOwner {
     baseURI = _newBaseURI;
+  }
+  function getBaseURI() public view onlyOwner returns(string memory){
+    return baseURI;
   }
 
   function setBaseExtension(string memory _newBaseExtension) public onlyOwner {
